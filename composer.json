@@ -1,23 +1,22 @@
 {
   "name": "sanzgrapher/filament-draggable-modal",
-  "description": "A Filament v5 plugin to make modals draggable.",
+  "description": "Make Filament v5 modals draggable.",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
-      "name": "Narayan Dhakal",
-      "email": "narayandhakal443@gmail.com"
+      "name": "Sanzgrapher",
+      "email": "info@sanzgrapher.com"
     }
   ],
+  "require": {
+    "php": "^8.2",
+    "filament/filament": "^5.0"
+  },
   "autoload": {
     "psr-4": {
       "Sanzgrapher\\DraggableModal\\": "src/"
     }
-  },
-  "require": {
-    "php": ">=8.1",
-    "filament/filament": "^5.0",
-    "spatie/laravel-package-tools": "^2.0"
   },
   "extra": {
     "laravel": {
@@ -25,5 +24,7 @@
         "Sanzgrapher\\DraggableModal\\DraggableModalServiceProvider"
       ]
     }
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

@@ -5,23 +5,20 @@ namespace Sanzgrapher\DraggableModal;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class DraggableModalServiceProvider extends PackageServiceProvider
+class DraggableModalServiceProvider extends ServiceProvider
 {
-    public static string $name = 'draggable-modal';
-
-    public function configurePackage(Package $package): void
+    public function register(): void
     {
-        $package->name(static::$name);
+        //
     }
 
-    public function packageBooted(): void
+    public function boot(): void
     {
         FilamentAsset::register([
-            Js::make('draggable-modal', __DIR__ . '/../resources/dist/draggable-modal.js'),
-            Css::make('draggable-modal', __DIR__ . '/../resources/dist/draggable-modal.css'),
+            Js::make('draggable-modal-js', __DIR__ . '/../resources/dist/drag-modal.js'),
+            Css::make('draggable-modal-css', __DIR__ . '/../resources/dist/drag-modal.css'),
         ], 'sanzgrapher/draggable-modal');
     }
 }

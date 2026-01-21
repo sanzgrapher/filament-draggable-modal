@@ -1,0 +1,19 @@
+/**
+ * Filament v5 Draggable Modal Styles
+ */
+
+.fi-modal-window {
+  transition: none !important;
+}
+
+.fi-modal-header,
+.fi-modal-heading,
+[data-slot="title"] {
+  cursor: move !important;
+}
+
+.fi-modal-header button,
+.fi-modal-header a,
+.fi-modal-header input {
+  cursor: pointer !important;
+}
