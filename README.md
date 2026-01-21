@@ -1,5 +1,7 @@
 # Filament Draggable Modal
 
+![Filament Draggable Modal Feature](filament-draggable-modal-feature.jpg)
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sanzgrapher/filament-draggable-modal.svg?style=flat-square)](https://packagist.org/packages/sanzgrapher/filament-draggable-modal)
 [![Total Downloads](https://img.shields.io/packagist/dt/sanzgrapher/filament-draggable-modal.svg?style=flat-square)](https://packagist.org/packages/sanzgrapher/filament-draggable-modal)
 
