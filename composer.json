@@ -1,6 +1,6 @@
 {
   "name": "sanzgrapher/filament-draggable-modal",
-  "description": "Make Filament v5 modals draggable.",
+  "description": "Make Filament modals draggable.",
   "type": "library",
   "license": "MIT",
   "authors": [
