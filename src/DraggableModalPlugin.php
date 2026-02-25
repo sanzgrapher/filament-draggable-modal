@@ -29,7 +29,7 @@ class DraggableModalPlugin implements Plugin
         //
     }
 
-    public function slideoverDraggable(bool $condition = true): static
+    public function slideoverDraggable(bool $condition = false): static
     {
         $this->enableSlideoverDraggable = $condition;
         return $this;

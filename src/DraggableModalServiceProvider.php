@@ -2,6 +2,7 @@
 
 namespace Sanzgrapher\DraggableModal;
 
+use Filament\Facades\Filament;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
@@ -13,7 +14,7 @@ class DraggableModalServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // No bindings or registrations needed for this plugin, as it only provides assets
+        // 
     }
 
     public function boot(): void
@@ -34,7 +35,7 @@ class DraggableModalServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'filament-draggable-modal');
         FilamentView::registerRenderHook(
             'panels::body.end',
-            fn (): string => Blade::render('<x-filament-draggable-modal::config />')
+            fn (): string => Filament::hasPlugin('draggable-modal') ? Blade::render('<x-filament-draggable-modal::config />') : ''
         );
     }
 }

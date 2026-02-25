@@ -53,7 +53,7 @@ public function panel(Panel $panel): Panel
         // ... other configuration
         ->plugin(
             DraggableModalPlugin::make()
-                ->slideoverDraggable(false) 
+                ->slideoverDraggable(true) 
         );
 }
 ```
