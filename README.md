@@ -58,7 +58,7 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-**Important:** When slideoverDraggable is disabled (default), slideouts will maintain their original Filament appearance and behavior without any modifications.
+**Important:** When `slideoverDraggable` is disabled (the default), slideover modals/slideouts use the standard Filament implementation: no additional CSS classes or JavaScript behavior from this plugin are applied.
 
 ## Troubleshooting
 
