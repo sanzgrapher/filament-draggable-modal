@@ -1,69 +1,111 @@
 /**
  * Filament v5 Draggable Modal
+ * features:
+ * - Makes Filament modals draggable by their header or title area.
+ * - Automatically detects and applies to new modals added to the DOM.
+ * - slideover modals are draggable only if enabled via config .
+ * - border constraints to prevent dragging completely off-screen.
  */
 (function () {
-    'use strict';
+    "use strict";
 
-    const modalSelectors = [
-        '.fi-modal-window',
-        '[role="dialog"]',
-    ];
+    const MODAL_SELECTOR = ".fi-modal-window";
+    const SLIDEOVER_CLASS = "fi-modal-slide-over";
 
-    const headerSelectors = [
-        '.fi-modal-header',
-        '.fi-modal-heading',
+    const HANDLE_SELECTORS = [
+        ".fi-modal-header",
+        ".fi-modal-heading",
         '[data-slot="title"]',
-        'header',
+        "header",
     ];
+
+    const attachedModals = new WeakSet();
+
+    function getConfig() {
+        return (
+            window.FilamentDraggableModalConfig || {
+                enableSlideoverDraggable: false,
+            }
+        );
+    }
+
+    function isSlideoverModal(modal) {
+        if (!modal) return false;
+        const wrapper = modal.closest(".fi-modal");
+        return wrapper && wrapper.classList.contains(SLIDEOVER_CLASS);
+    }
+
+    function isReallyVisible(el) {
+        if (!el || !document.body.contains(el)) return false;
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return false;
+        const style = window.getComputedStyle(el);
+        if (style.display === "none" || style.visibility === "hidden")
+            return false;
+        if (parseFloat(style.opacity) < 0.1) return false;
+        const wrapper = el.closest(".fi-modal");
+        if (wrapper) {
+            const ws = window.getComputedStyle(wrapper);
+            if (ws.display === "none" || ws.visibility === "hidden")
+                return false;
+            if (parseFloat(ws.opacity) < 0.1) return false;
+        }
+        return true;
+    }
 
     function makeDraggable(modal) {
-        if (!modal || modal.dataset.draggableModalAttached === '1') return;
+        if (!modal || attachedModals.has(modal)) return;
 
-        const dialogWindow = modal.classList.contains('fi-modal-window')
-            ? modal
-            : (modal.querySelector('.fi-modal-window') || modal);
-
-        if (!dialogWindow) return;
-        modal.dataset.draggableModalAttached = '1';
-
-        let handle = null;
-        for (const sel of headerSelectors) {
-            handle = dialogWindow.querySelector(sel);
-            if (handle) break;
+        // Check if this is a slideover modal and if slideover draggable is disabled
+        const config = getConfig();
+        if (isSlideoverModal(modal) && !config.enableSlideoverDraggable) {
+            return; // Skip making slideover modals draggable if disabled
         }
 
-        if (!handle) handle = dialogWindow;
+        attachedModals.add(modal);
 
-        handle.style.cursor = 'move';
-        handle.style.userSelect = 'none';
+        modal.classList.add("fi-modal-draggable-enabled");
 
-        let startX = 0, startY = 0, initialX = 0, initialY = 0;
+        let handle = null;
+        for (const sel of HANDLE_SELECTORS) {
+            handle = modal.querySelector(sel);
+            if (handle) break;
+        }
+        if (!handle) handle = modal;
+
+        // Set cursor and user-select styling explicitly
+        handle.style.userSelect = "none";
+        handle.style.cursor = "move";
+
+        let startX,
+            startY,
+            initialX,
+            initialY,
+            isDragging = false;
 
         function onMouseDown(e) {
             if (e.button !== 0) return;
-            if (e.target.closest('button, input, select, textarea, a')) return;
+            if (
+                e.target.closest(
+                    'button, input, select, textarea, a, [role="button"]',
+                )
+            )
+                return;
 
-            const rect = dialogWindow.getBoundingClientRect();
-
+            const rect = modal.getBoundingClientRect();
             initialX = rect.left;
             initialY = rect.top;
-
             startX = e.clientX;
             startY = e.clientY;
+            isDragging = false;
 
-            dialogWindow.style.width = rect.width + 'px';
-            // dialogWindow.style.height = rect.height + 'px'; // Let height be auto
-            dialogWindow.style.position = 'fixed';
-            dialogWindow.style.margin = '0';
-            dialogWindow.style.transform = 'none';
-            dialogWindow.style.left = initialX + 'px';
-            dialogWindow.style.top = initialY + 'px';
-            dialogWindow.style.right = 'auto';
-            dialogWindow.style.bottom = 'auto';
+            // Set grabbing cursor on mousedown
+            handle.style.cursor = "grabbing";
 
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-
+            document.addEventListener("mousemove", onMouseMove, {
+                passive: false,
+            });
+            document.addEventListener("mouseup", onMouseUp);
             e.preventDefault();
         }
 
@@ -71,40 +113,113 @@
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
 
-            dialogWindow.style.left = (initialX + dx) + 'px';
-            dialogWindow.style.top = (initialY + dy) + 'px';
+            if (!isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+                isDragging = true;
+
+                const rect = modal.getBoundingClientRect();
+
+                modal.style.width = rect.width + "px";
+                modal.style.height = rect.height + "px";
+                modal.style.position = "fixed";
+                modal.style.margin = "0";
+                modal.style.transform = "none";
+                modal.style.left = rect.left + "px";
+                modal.style.top = rect.top + "px";
+                modal.style.right = "auto";
+                modal.style.bottom = "auto";
+
+                if (isSlideoverModal(modal)) {
+                    modal.classList.add("is-detached");
+                }
+
+                modal.classList.add("is-dragging");
+            }
+
+            if (!isDragging) return;
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const rect = modal.getBoundingClientRect();
+            const min = 50;
+
+            modal.style.left =
+                Math.max(-rect.width + min, Math.min(initialX + dx, vw - min)) +
+                "px";
+            modal.style.top =
+                Math.max(10, Math.min(initialY + dy, vh - min)) + "px";
+            e.preventDefault();
         }
 
         function onMouseUp() {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
+            if (isDragging) modal.classList.remove("is-dragging");
+            isDragging = false;
+            handle.style.cursor = "move";
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
         }
 
-        handle.addEventListener('mousedown', onMouseDown);
+        handle.addEventListener("mousedown", onMouseDown);
     }
 
-    const observer = new MutationObserver(mutations => {
-        for (const m of mutations) {
-            for (const node of m.addedNodes) {
-                if (!(node instanceof HTMLElement)) continue;
-                if (modalSelectors.some(s => node.matches(s))) {
-                    setTimeout(() => makeDraggable(node), 100);
-                } else {
-                    const found = node.querySelector(modalSelectors.join(','));
-                    if (found) setTimeout(() => makeDraggable(found), 100);
+    function resetSlideoverState() {
+        modal.classList.remove("is-detached");
+        modal.style.width = "";
+        modal.style.height = "";
+        modal.style.position = "";
+        modal.style.margin = "";
+        modal.style.left = "";
+        modal.style.top = "";
+        modal.style.right = "";
+        modal.style.bottom = "";
+    }
+
+    function scanForModals() {
+        document.querySelectorAll(MODAL_SELECTOR).forEach((modal) => {
+            if (!attachedModals.has(modal)) {
+                if (modal.classList.contains('hidden') || modal.style.display === 'none') {
+                    return;
                 }
+                makeDraggable(modal);
             }
-        }
-    });
+        });
+    }
 
     function init() {
-        document.querySelectorAll(modalSelectors.join(',')).forEach(makeDraggable);
-        observer.observe(document.body, { childList: true, subtree: true });
+        scanForModals();
+
+        const observer = new MutationObserver((mutations) => {
+            let shouldScan = false;
+            for (const mutation of mutations) {
+                if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+                    shouldScan = true;
+                    break;
+                }
+                if (mutation.type === "attributes") {
+                    shouldScan = true;
+                    break;
+                }
+            }
+            if (shouldScan) {
+                scanForModals();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["class", "style"],
+        });
+        setInterval(scanForModals, 1000);
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
     } else {
         init();
+    }
+
+    if (typeof window !== "undefined") {
+        window.FilamentDraggableModal = { makeDraggable, init };
     }
 })();

@@ -2,18 +2,75 @@
  * Filament v5 Draggable Modal Styles
  */
 
-.fi-modal-window {
-  transition: none !important;
+.fi-modal-window.hidden,
+.fi-modal-window[style*="display: none"],
+.fi-modal-window[style*="display:none"] {
+    display: none !important;
 }
 
-.fi-modal-header,
-.fi-modal-heading,
-[data-slot="title"] {
-  cursor: move !important;
+/* Ensure modal window is flexbox container with max height - only for draggable enabled */
+.fi-modal-window.fi-modal-draggable-enabled {
+    display: flex;
+    flex-direction: column;
+    /* max-height: 90vh; */
+    overflow: hidden;
 }
 
-.fi-modal-header button,
-.fi-modal-header a,
-.fi-modal-header input {
-  cursor: pointer !important;
+/* Content area needs to scroll - only for draggable modals */
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-content,
+.fi-modal-window.fi-modal-draggable-enabled [data-slot="content"] {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    min-height: 0; 
 }
+
+/* Prevent header/footer from shrinking - only for draggable modals */
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-header,
+.fi-modal-window.fi-modal-draggable-enabled footer,
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-footer {
+    flex-shrink: 0;  
+}
+
+
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-header {
+    cursor: move;
+    user-select: none;
+}
+
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-header:active {
+    cursor: grabbing;
+}
+
+.fi-modal-window.is-dragging {
+    user-select: none;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Scrollbar styles - only for draggable modals */
+.fi-modal-window.fi-modal-draggable-enabled [data-slot="content"]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-content::-webkit-scrollbar-thumb,
+.fi-modal-window.fi-modal-draggable-enabled [data-slot="content"]::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 4px;
+}
+
+.fi-modal-window.fi-modal-draggable-enabled .fi-modal-content::-webkit-scrollbar-thumb:hover,
+.fi-modal-window.fi-modal-draggable-enabled [data-slot="content"]::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.7);
+}
+
+/* Dark mode scrollbar */
+.dark .fi-modal-window.fi-modal-draggable-enabled .fi-modal-content::-webkit-scrollbar-thumb,
+.dark .fi-modal-window.fi-modal-draggable-enabled [data-slot="content"]::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+}
+
+.dark .fi-modal-window.fi-modal-draggable-enabled .fi-modal-content::-webkit-scrollbar-thumb:hover,
+.dark .fi-modal-window.fi-modal-draggable-enabled [data-slot="content"]::-webkit-scrollbar-thumb:hover {
+    background: rgba(75, 85, 99, 0.7);
+}
+

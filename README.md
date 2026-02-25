@@ -13,6 +13,7 @@ A simple yet powerful Filament v5 plugin to make all your modals draggable. Impr
 - **Filament v5 Ready**: Designed specifically for the latest Filament version.
 - **Smooth Dragging**: Uses fixed positioning and handles CSS transforms to prevent jumping.
 - **Smart Handle Detection**: Draggable by the modal header, but buttons and inputs remain clickable.
+- **Slideover Support**: Optional draggable functionality for slideover modals (disabled by default).
 
 ## Installation
 
@@ -36,6 +37,28 @@ public function panel(Panel $panel): Panel
         ->plugin(DraggableModalPlugin::make());
 }
 ```
+
+That's it! All your regular modals are now draggable.
+
+### Slideover Modals
+
+By default, **slideover modals are NOT draggable** to preserve their native behavior. If you want to make slideover modals draggable as well, you can enable this feature:
+
+```php
+use Sanzgrapher\DraggableModal\DraggableModalPlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ... other configuration
+        ->plugin(
+            DraggableModalPlugin::make()
+                ->slideoverDraggable(true) 
+        );
+}
+```
+
+**Important:** When `slideoverDraggable` is disabled (the default), slideover modals/slideouts use the standard Filament implementation: no additional CSS classes or JavaScript behavior from this plugin are applied.
 
 ## Troubleshooting
 
