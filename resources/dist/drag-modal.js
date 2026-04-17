@@ -17,14 +17,13 @@
     ];
 
     function makeDraggable(modal) {
-        if (!modal || modal.dataset.draggableModalAttached === '1') return;
+        if (!modal) return;
 
         const dialogWindow = modal.classList.contains('fi-modal-window')
             ? modal
             : (modal.querySelector('.fi-modal-window') || modal);
 
         if (!dialogWindow) return;
-        modal.dataset.draggableModalAttached = '1';
 
         let handle = null;
         for (const sel of headerSelectors) {
@@ -33,6 +32,8 @@
         }
 
         if (!handle) handle = dialogWindow;
+        if (handle.dataset.draggableModalAttached === '1') return;
+        handle.dataset.draggableModalAttached = '1';
 
         handle.style.cursor = 'move';
         handle.style.userSelect = 'none';
@@ -101,6 +102,8 @@
         document.querySelectorAll(modalSelectors.join(',')).forEach(makeDraggable);
         observer.observe(document.body, { childList: true, subtree: true });
     }
+
+    document.addEventListener('livewire:navigated', init);
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
