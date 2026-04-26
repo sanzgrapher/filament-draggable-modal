@@ -97,9 +97,18 @@
         }
     });
 
-    function init() {
+    function scanModals() {
         document.querySelectorAll(modalSelectors.join(',')).forEach(makeDraggable);
+    }
+
+    function observeBody() {
+        observer.disconnect();
         observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    function init() {
+        scanModals();
+        observeBody();
     }
 
     if (document.readyState === 'loading') {
@@ -107,4 +116,9 @@
     } else {
         init();
     }
+
+    document.addEventListener('livewire:navigated', () => {
+        scanModals();
+        observeBody();
+    });
 })();
