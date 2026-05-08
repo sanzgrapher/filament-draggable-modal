@@ -19,12 +19,22 @@
     function makeDraggable(modal) {
         if (!modal || modal.dataset.draggableModalAttached === '1') return;
 
+        if (
+            modal.closest('.fi-modal-slide-over') ||
+            modal.classList.contains('fi-modal-slide-over')
+        ) {
+            return;
+        }
+
+        if (window.innerWidth < 768) return;
+
         const dialogWindow = modal.classList.contains('fi-modal-window')
             ? modal
             : (modal.querySelector('.fi-modal-window') || modal);
 
         if (!dialogWindow) return;
         modal.dataset.draggableModalAttached = '1';
+        dialogWindow.classList.add('is-draggable-modal');
 
         let handle = null;
         for (const sel of headerSelectors) {
