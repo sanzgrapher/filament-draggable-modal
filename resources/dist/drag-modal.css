@@ -6,9 +6,9 @@
   transition: none !important;
 }
 
-.fi-modal-header,
-.fi-modal-heading,
-[data-slot="title"] {
+.is-draggable-modal .fi-modal-header,
+.is-draggable-modal .fi-modal-heading,
+.is-draggable-modal [data-slot="title"] {
   cursor: move !important;
 }
 
