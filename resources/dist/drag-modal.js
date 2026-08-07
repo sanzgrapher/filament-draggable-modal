@@ -28,6 +28,7 @@
 
         if (!dialogWindow) return;
         modal.dataset.draggableModalAttached = '1';
+        dialogWindow.classList.add('is-draggable-modal');
 
         let handle = null;
         for (const sel of headerSelectors) {

@@ -6,16 +6,10 @@
   transition: none !important;
 }
 
-.fi-modal-header,
-.fi-modal-heading,
-[data-slot="title"] {
+.is-draggable-modal .fi-modal-header,
+.is-draggable-modal .fi-modal-heading,
+.is-draggable-modal [data-slot="title"] {
   cursor: move !important;
-}
-
-.fi-modal-slide-over .fi-modal-header,
-.fi-modal-slide-over .fi-modal-heading,
-.fi-modal-slide-over [data-slot="title"] {
-  cursor: auto !important;
 }
 
 .fi-modal-header button,
