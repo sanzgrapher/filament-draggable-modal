@@ -19,12 +19,16 @@
     function makeDraggable(modal) {
         if (!modal || modal.dataset.draggableModalAttached === '1') return;
 
+        // Slide-overs are anchored to the viewport edge; leave them non-draggable.
+        if (modal.closest('.fi-modal-slide-over')) return;
+
         const dialogWindow = modal.classList.contains('fi-modal-window')
             ? modal
             : (modal.querySelector('.fi-modal-window') || modal);
 
         if (!dialogWindow) return;
         modal.dataset.draggableModalAttached = '1';
+        dialogWindow.classList.add('is-draggable-modal');
 
         let handle = null;
         for (const sel of headerSelectors) {
