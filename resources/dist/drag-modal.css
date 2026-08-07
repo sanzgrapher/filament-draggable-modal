@@ -2,7 +2,7 @@
  * Filament v5 Draggable Modal Styles
  */
 
-.fi-modal-window {
+.fi-modal:not(.fi-modal-slide-over) .fi-modal-window {
   transition: none !important;
 }
 
@@ -10,6 +10,12 @@
 .fi-modal-heading,
 [data-slot="title"] {
   cursor: move !important;
+}
+
+.fi-modal-slide-over .fi-modal-header,
+.fi-modal-slide-over .fi-modal-heading,
+.fi-modal-slide-over [data-slot="title"] {
+  cursor: auto !important;
 }
 
 .fi-modal-header button,
